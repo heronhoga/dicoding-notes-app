@@ -1,22 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Catatanku!</title>
-  <link rel="stylesheet" href="/css/style.css" />
-</head>
-<body>
-<h1>Catatanku!</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Catatanku!</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <h1>Catatanku!</h1>
 
-  <form id="note-form">
-    <input type="text" id="note-title" placeholder="Judul" required />
-    <textarea id="note-body" placeholder="Isi catatan..." required></textarea>
-    <button type="submit">Tambah Catatan</button>
-  </form>
+    <form id="note-form">
+      <label for="note-title">Judul (minimal 3 huruf)</label>
+      <input type="text" id="note-title" placeholder="Judul" required />
+      <span id="title-error" style="color: red; font-size: 0.9rem"></span>
 
-  <div id="notes-container" class="grid"></div>
+      <label for="note-body">Isi Catatan (minimal 5 huruf)</label>
+      <textarea id="note-body" placeholder="Isi catatan..." required></textarea>
+      <span id="body-error" style="color: red; font-size: 0.9rem"></span>
 
-  <script type="module" src="/js/script.js"></script>
-</body>
+      <button type="submit">Tambah Catatan</button>
+    </form>
+
+    <div id="notes-container" class="grid"></div>
+
+    <script type="module" src="/js/script.js"></script>
+  </body>
 </html>

@@ -206,10 +206,28 @@ if (form && titleInput && bodyInput) {
     const title = titleInput.value.trim();
     const body = bodyInput.value.trim();
 
-    if (title && body) {
-      createNoteElement(title, body);
-      titleInput.value = "";
-      bodyInput.value = "";
+    const titleError = document.getElementById("title-error");
+    const bodyError = document.getElementById("body-error");
+
+    let isValid = true;
+
+    titleError.textContent = "";
+    bodyError.textContent = "";
+
+    if (title.length < 3) {
+      titleError.textContent = "Judul minimal 3 huruf.";
+      isValid = false;
     }
+
+    if (body.length < 5) {
+      bodyError.textContent = "Isi catatan minimal 5 huruf.";
+      isValid = false;
+    }
+
+    if (!isValid) return;
+
+    createNoteElement(title, body);
+    titleInput.value = "";
+    bodyInput.value = "";
   });
 }
