@@ -1,3 +1,8 @@
+import "./note-item.js";
+import "./note-form.js";
+
+const notesContainer = document.getElementById("notes-container");
+
 const notesData = [
   {
     id: "notes-jT-jjsyz61J8XKiI",
@@ -106,128 +111,34 @@ const notesData = [
   },
 ];
 
-class NoteCard extends HTMLElement {
-  constructor() {
-    super();
-    this.attachShadow({ mode: "open" });
-  }
+notesData.forEach((note) => {
+  createNoteElement(
+    note.id,
+    note.title,
+    note.body,
+    note.createdAt,
+    note.archived,
+  );
+});
 
-  static get observedAttributes() {
-    return ["id", "title", "body", "createdat", "archived"];
-  }
+document.addEventListener("note-submitted", (e) => {
+  const { title, body } = e.detail;
+  const newNote = {
+    id: `notes-${Math.random().toString(36).substring(2, 10)}`,
+    title,
+    body,
+    createdAt: new Date().toISOString(),
+    archived: false,
+  };
+  createNoteElement(newNote.id, newNote.title, newNote.body, newNote.createdAt, newNote.archived);
+});
 
-  attributeChangedCallback() {
-    this.render();
-  }
-
-  render() {
-    const id = this.getAttribute("id");
-    const title = this.getAttribute("title");
-    const body = this.getAttribute("body");
-    const createdAt = this.getAttribute("createdat");
-    const archived = this.getAttribute("archived") === "true" ? "Yes" : "No";
-
-    this.shadowRoot.innerHTML = `
-      <style>
-        .card {
-          background: white;
-          padding: 1rem;
-          margin-bottom: 1rem;
-          border-radius: 10px;
-          box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-          font-family: sans-serif;
-        }
-        h3 {
-          margin: 0 0 0.5rem 0;
-          font-size: 1.1rem;
-        }
-        p {
-          margin: 0.25rem 0;
-          white-space: pre-wrap;
-        }
-        .meta {
-          font-size: 0.9rem;
-          color: #555;
-        }
-      </style>
-      <div class="card">
-        <h3>${title}</h3>
-        <p>${body}</p>
-        <p class="meta"><strong>ID:</strong> ${id}</p>
-        <p class="meta"><strong>Created At:</strong> ${new Date(
-          createdAt
-        ).toLocaleString()}</p>
-        <p class="meta"><strong>Archived:</strong> ${archived}</p>
-      </div>
-    `;
-  }
-}
-
-customElements.define("note-card", NoteCard);
-
-const container = document.getElementById("notes-container");
-
-if (container) {
-  notesData.forEach((note) => {
-    createNoteElement(
-      note.title,
-      note.body,
-      note.id,
-      note.createdAt,
-      note.archived
-    );
-  });
-}
-
-function createNoteElement(
-  title,
-  body,
-  id = null,
-  createdAt = null,
-  archived = false
-) {
-  const note = document.createElement("note-card");
+function createNoteElement(id, title, body, createdAt, archived) {
+  const note = document.createElement("note-item");
+  note.setAttribute("id", id);
   note.setAttribute("title", title);
   note.setAttribute("body", body);
-  note.setAttribute("id", id ?? `notes-${Date.now()}`);
-  note.setAttribute("createdat", createdAt ?? new Date().toISOString());
-  note.setAttribute("archived", archived.toString());
-  container.appendChild(note);
-}
-
-const form = document.getElementById("note-form");
-const titleInput = document.getElementById("note-title");
-const bodyInput = document.getElementById("note-body");
-
-if (form && titleInput && bodyInput) {
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    const title = titleInput.value.trim();
-    const body = bodyInput.value.trim();
-
-    const titleError = document.getElementById("title-error");
-    const bodyError = document.getElementById("body-error");
-
-    let isValid = true;
-
-    titleError.textContent = "";
-    bodyError.textContent = "";
-
-    if (title.length < 3) {
-      titleError.textContent = "Judul minimal 3 huruf.";
-      isValid = false;
-    }
-
-    if (body.length < 5) {
-      bodyError.textContent = "Isi catatan minimal 5 huruf.";
-      isValid = false;
-    }
-
-    if (!isValid) return;
-
-    createNoteElement(title, body);
-    titleInput.value = "";
-    bodyInput.value = "";
-  });
+  note.setAttribute("createdat", createdAt);
+  note.setAttribute("archived", archived);
+  notesContainer.appendChild(note);
 }
